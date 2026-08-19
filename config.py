@@ -13,13 +13,15 @@ class font:
     RETRO = pygame.font.Font("fonts/PressStart2P-Regular.ttf", 14)
     MENU = pygame.font.Font("fonts/PressStart2P-Regular.ttf", 14)
     LOGO = pygame.font.Font("fonts/PressStart2P-Regular.ttf", 17)
-    SEARCH = pygame.font.Font("fonts/PressStart2P-Regular.ttf", 18)
+    SEARCH = pygame.font.Font("fonts/PressStart2P-Regular.ttf", 12)
 
 class skin:
     BG = pygame.image.load("assets/background/background.png")
     PANEL = pygame.image.load("assets/ui/Panel.png")
     LOGO = pygame.image.load("assets/ui/Logo.png")
-    SEARCHBAR = pygame.image.load("assets/ui/Searchbar.png")
+    ADD_PANEL = pygame.image.load("assets/ui/Add_panel.png")
+    #SEARCHBAR = pygame.image.load("assets/ui/Searchbar.png")
+
 
     HOME_ICON = pygame.image.load("assets/icons/Home.png")
     ADD_ICON = pygame.image.load("assets/icons/Add.png")
