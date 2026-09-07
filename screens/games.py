@@ -1,12 +1,9 @@
 import pygame
 
-from database.database import (
-    get_games,
-    add_game_to_library
-)
+from database.database import get_library_games
 
 
-class AddScreen:
+class GamesScreen:
 
     def __init__(self, screen, config):
 
@@ -17,19 +14,13 @@ class AddScreen:
         # LOGO
         # ==========================================
 
-        self.logo = self.config.skin.LOGO
+        self.logo = config.skin.LOGO
 
         self.logo_text = config.font.LOGO.render(
             "Game Library",
             True,
             "white"
         )
-
-        self.logo_x = 84
-        self.logo_y = 86
-
-        self.logo_text_x = 173
-        self.logo_text_y = 127
 
         # ==========================================
         # FONTES
@@ -39,31 +30,31 @@ class AddScreen:
         self.menu_font = config.font.SEARCH
 
         # ==========================================
-        # PAINEL
-        # ==========================================
-
-        self.panel_img = config.skin.ADD_PANEL
-
-        # ==========================================
         # TÍTULO
         # ==========================================
 
         self.title = self.title_font.render(
-            "ADD GAME",
+            "GAMES",
             True,
             "Dark green"
         )
 
+        # ==========================================
+        # POSIÇÃO DO LOGO
+        # ==========================================
+
+        self.logo_x = 84
+        self.logo_y = 86
+
+        self.logo_text_x = 173
+        self.logo_text_y = 127
+
+        # ==========================================
+        # POSIÇÃO DO TÍTULO
+        # ==========================================
+
         self.title_x = 960
         self.title_y = 165
-
-        # ==========================================
-        # JOGOS
-        # ==========================================
-
-        self.games = get_games()
-
-        self.selected_game = None
 
         # ==========================================
         # LISTA
@@ -73,29 +64,30 @@ class AddScreen:
         self.list_y = 210
         self.list_spacing = 45
 
+        # ==========================================
+        # JOGOS DA BIBLIOTECA
+        # ==========================================
+
+        self.games = get_library_games()
+
         self.game_rects = []
 
-        # ==========================================
-        # BOTÃO ADD
-        # ==========================================
-
-        self.add_button_rect = pygame.Rect(
-            925,
-            400,
-            70,
-            30
-        )
+        self.selected_game = None
 
         # ==========================================
         # BOTÃO BACK
         # ==========================================
 
-        self.back_button_rect = pygame.Rect(
-            925,
-            600,
-            70,
-            30
+        self.back_button = self.menu_font.render(
+            "BACK",
+            True,
+            "gray"
         )
+
+        self.back_button_rect = self.back_button.get_rect()
+
+        self.back_button_rect.centerx = 960
+        self.back_button_rect.y = 600
 
     # =================================================
     # DRAW
@@ -108,7 +100,7 @@ class AddScreen:
         # ==========================================
 
         self.screen.blit(
-            self.panel_img,
+            self.config.skin.ADD_PANEL,
             (810, 130)
         )
 
@@ -160,7 +152,16 @@ class AddScreen:
 
         for index, game in enumerate(self.games):
 
-            game_id, name, platform, year = game
+            (
+                game_id,
+                name,
+                platform,
+                year,
+                cover,
+                genre,
+                developer,
+                description
+            ) = game
 
             y = (
                 self.list_y
@@ -199,22 +200,10 @@ class AddScreen:
             )
 
             # ======================================
-            # SELECIONADO
-            # ======================================
-
-            if self.selected_game == game:
-
-                game_text = self.menu_font.render(
-                    name,
-                    True,
-                    "Dark green"
-                )
-
-            # ======================================
             # HOVER
             # ======================================
 
-            elif item_rect.collidepoint(
+            if item_rect.collidepoint(
                 mouse_pos
             ):
 
@@ -232,39 +221,6 @@ class AddScreen:
                 game_text,
                 text_rect
             )
-
-        # ==========================================
-        # BOTÃO ADD
-        # ==========================================
-
-        if self.add_button_rect.collidepoint(
-            mouse_pos
-        ):
-
-            add_button = self.menu_font.render(
-                "ADD",
-                True,
-                (255, 220, 120)
-            )
-
-        else:
-
-            add_button = self.menu_font.render(
-                "ADD",
-                True,
-                "Dark green"
-            )
-
-        add_button_rect = add_button.get_rect()
-
-        add_button_rect.center = (
-            self.add_button_rect.center
-        )
-
-        self.screen.blit(
-            add_button,
-            add_button_rect
-        )
 
         # ==========================================
         # BOTÃO BACK
@@ -288,15 +244,9 @@ class AddScreen:
                 "gray"
             )
 
-        back_button_rect = back_button.get_rect()
-
-        back_button_rect.center = (
-            self.back_button_rect.center
-        )
-
         self.screen.blit(
             back_button,
-            back_button_rect
+            self.back_button_rect
         )
 
     # =================================================
@@ -322,7 +272,7 @@ class AddScreen:
                     return "home"
 
                 # ==================================
-                # SELEÇÃO DE JOGO
+                # JOGOS
                 # ==================================
 
                 for rect, game in self.game_rects:
@@ -338,29 +288,9 @@ class AddScreen:
                             game
                         )
 
-                        return "game_selected"
-
-                # ==================================
-                # ADD
-                # ==================================
-
-                if self.add_button_rect.collidepoint(
-                    mouse_pos
-                ):
-
-                    if self.selected_game is not None:
-
-                        game_id = self.selected_game[0]
-
-                        add_game_to_library(
-                            game_id
+                        return (
+                            "game_details",
+                            game
                         )
-
-                        print(
-                            "Jogo adicionado:",
-                            self.selected_game
-                        )
-
-                        return "game_added"
 
         return None

@@ -115,3 +115,6 @@ class HomeScreen:
                         if item["text"] == "Add":
                             return "add"
 
+                        if item["text"] == "Games":
+                            return "games"
+
